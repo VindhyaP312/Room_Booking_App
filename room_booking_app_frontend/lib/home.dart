@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:room_booking_app/book_a_room.dart';
+import 'package:room_booking_app/login_page.dart';
 import 'package:room_booking_app/view_bookings.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,14 +45,38 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Room Booking App",
-          style: TextStyle(color: Colors.white),
+        title: Row(
+          children: [
+            const Text(
+              "Room Booking App",
+              style: TextStyle(color: Colors.white),
+            ),
+            const Spacer(),
+            const Text(
+              "Logout",
+              style: TextStyle(color: Colors.white),
+            ),
+            IconButton(
+              icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: _logout,
+            ),
+          ],
         ),
       ),
       body: Center(

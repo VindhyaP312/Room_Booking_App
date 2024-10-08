@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:room_booking_app/home.dart';
 import 'package:room_booking_app/login_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  bool isLoggedIn = await _loginStatus();
+  runApp(MyApp(isLoggedIn: isLoggedIn));
+}
+
+Future<bool> _loginStatus() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('token');
+  return token != null ? true : false ;
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +42,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginPage(),
+      home: isLoggedIn ? const HomeScreen() : const LoginPage(),
     );
   }
 }
